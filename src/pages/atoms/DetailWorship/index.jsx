@@ -1,0 +1,38 @@
+import axios from "axios";
+import { useEffect } from "react";
+import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { Link } from "../../../components";
+
+export default function DetailWorship() {
+    const navigate = useNavigate();
+    const params = useParams();
+    const [data, setData] = useState({});
+
+    useEffect(() => {
+        axios.get(`https://church-app-blue.vercel.app/v1/wor/getbyid/${params.wid}`)
+        .then(result => {
+            setData(result.data.data);
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }, [params])
+
+    return (
+        <div className="flex-grow bg-slate-100">
+            <div className="w-4/5 h-fit m-auto bg-white shadow-2xl p-10">
+                <Link text={'Kembali'} decor={'underline text-gray-600'} handleClick={() => navigate(-1)} />
+                <div className="grid grid-cols-2 gap-10 my-10">
+                    <div>
+                        <h1 className="text-4xl font-bold text-center mb-10">{data.title}</h1>
+                        <p className="text-justify">
+                            {data.caption}
+                        </p>
+                    </div>
+                    <img src={`https://church-app-blue.vercel.app/${data.poster}`} className="m-auto" />
+                </div>
+            </div>
+        </div>
+    )
+}
